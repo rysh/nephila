@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  server:
+    image: rysh/nephila:latest
+    ports:
+      - "9000:9000"
+
+  test:
+    depends_on:
+      - server
+    image: amazoncorretto:8u202
+    links:
+      - server
+    command: /bin/sh -c "while true; do echo hello world; sleep 1; done"
+    volumes:
+      - "./test/:/var/test/"

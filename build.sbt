@@ -4,10 +4,10 @@ import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 ThisBuild / scalaVersion     := "2.12.6"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
-ThisBuild / organization     := "com.rysh"
+ThisBuild / organization     := "rysh"
 ThisBuild / organizationName := "rysh"
 
-lazy val server = (project in file("application/server")).settings(commonSettings).settings(
+lazy val nephila = (project in file("application/server")).settings(commonSettings).settings(
   scalaJSProjects := Seq(client),
   pipelineStages in Assets := Seq(scalaJSPipeline),
   pipelineStages := Seq(digest, gzip),
@@ -20,8 +20,15 @@ lazy val server = (project in file("application/server")).settings(commonSetting
     scalaTest % Test
   ),
   // Compile the project before generating Eclipse files, so that generated .scala or .class files for views and routes are present
-  EclipseKeys.preTasks := Seq(compile in Compile)
-).enablePlugins(PlayScala)
+  EclipseKeys.preTasks := Seq(compile in Compile),
+  organization := "rysh",
+  dockerUsername := Some("rysh"),
+  version := "latest",
+  dockerBaseImage := "amazoncorretto:8u202",
+  javaOptions in Universal ++= Seq(
+    "-Dpidfile.path=/dev/null"
+  )
+).enablePlugins(PlayScala, JavaAppPackaging, DockerPlugin)
   .dependsOn(sharedJvm)
 
 lazy val client = (project in file("application/client")).settings(commonSettings).settings(
@@ -41,8 +48,9 @@ lazy val sharedJs = shared.js
 
 lazy val commonSettings = Seq(
   scalaVersion := "2.12.6",
-  organization := "com.rysh"
+  organization := "rysh"
 )
 
 // loads the server project at sbt startup
-onLoad in Global := (onLoad in Global).value andThen {s: State => "project server" :: s}
+onLoad in Global := (onLoad in Global).value andThen {s: State => "project nephila" :: s}
+

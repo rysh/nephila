@@ -1,0 +1,43 @@
+# Scala CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/sample-config/ for more details
+#
+version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys: sbt-cache
+
+      - run: cat /dev/null | sbt test:compile
+
+      - save_cache:
+          key: sbt-cache
+          paths:
+            - "~/.ivy2/cache"
+            - "~/.sbt"
+            - ~/.m2
+
+      # run tests!
+      - run: cat /dev/null | sbt test:test
+      - run:
+          name: dist package
+          command: |
+                    cat /dev/null | sbt docker:publishLocal
+      - run:
+          name: Docker Login
+          command: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+      - run:
+          name: Start server and check
+          command: |
+            cd docker
+            docker-compose up -d
+            docker exec docker_test_1 /var/test/wait.sh
+            docker-compose down
+      - run:
+          name: Push image to registory
+          command: docker push rysh/nephila
