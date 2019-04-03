@@ -9,9 +9,10 @@ services:
   test:
     depends_on:
       - server
-    image: amazoncorretto:8u202
+    image: rysh/nephila-test
     links:
       - server
     command: /bin/sh -c "while true; do echo hello world; sleep 1; done"
     volumes:
       - "./test/:/var/test/"
+      - "../e2e/:/var/e2e/"

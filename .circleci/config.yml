@@ -15,6 +15,12 @@ jobs:
 
       - run: cat /dev/null | sbt test:compile
 
+      - run:
+          name: E2E Compile
+          command: |
+                    cd e2e
+                    cat /dev/null | sbt test:compile
+
       - save_cache:
           key: sbt-cache
           paths:
@@ -37,6 +43,7 @@ jobs:
             cd docker
             docker-compose up -d
             docker exec docker_test_1 /var/test/wait.sh
+            docker exec docker_test_1 /var/test/test.sh
             docker-compose down
       - run:
           name: Push image to registory
