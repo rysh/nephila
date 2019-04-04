@@ -21,3 +21,4 @@ addSbtPlugin("com.typesafe.sbteclipse"   % "sbteclipse-plugin"         % "5.2.4"
 
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.0.0-RC5")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.20")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")

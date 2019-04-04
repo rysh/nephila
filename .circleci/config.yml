@@ -13,13 +13,9 @@ jobs:
       - restore_cache:
           keys: sbt-cache
 
-      - run: cat /dev/null | sbt test:compile
-
-      - run:
-          name: E2E Compile
-          command: |
-                    cd e2e
-                    cat /dev/null | sbt test:compile
+      - run: cat /dev/null | sbt clean coverage test coverageReport
+      - store_artifacts:
+          path:  application/server/target/scala-2.12/scoverage-report/
 
       - save_cache:
           key: sbt-cache
@@ -28,8 +24,6 @@ jobs:
             - "~/.sbt"
             - ~/.m2
 
-      # run tests!
-      - run: cat /dev/null | sbt test:test
       - run:
           name: dist package
           command: |
