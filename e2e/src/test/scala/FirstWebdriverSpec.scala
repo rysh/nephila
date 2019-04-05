@@ -3,8 +3,11 @@ import org.scalatest._
 import org.scalatest.selenium.WebBrowser
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
+import io.github.bonigarcia.wdm.WebDriverManager
+
 
 class FirstWebDriverSpec extends FlatSpec with Matchers with WebBrowser {
+  WebDriverManager.chromedriver.setup
   "http://server:9000/" should "have the correct title" in {
     val ops = new ChromeOptions
     ops.addArguments("--headless")
