@@ -27,7 +27,8 @@ lazy val nephila = (project in file("application/server")).settings(commonSettin
   dockerBaseImage := "amazoncorretto:8u202",
   javaOptions in Universal ++= Seq(
     "-Dpidfile.path=/dev/null"
-  )
+  ),
+  coverageExcludedPackages := """controllers\..*Reverse.*;router.Routes.*;.*Reverse.*"""
 ).enablePlugins(PlayScala, JavaAppPackaging, DockerPlugin)
   .dependsOn(sharedJvm)
 

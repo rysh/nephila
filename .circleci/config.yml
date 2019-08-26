@@ -12,8 +12,20 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys: sbt-cache
+      # CC_TEST_REPORTER_ID
+      - run: 
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
 
-      - run: cat /dev/null | sbt clean coverage test coverageReport
+      - run: 
+          name: Run Tests
+          command: |
+            ./cc-test-reporter before-build
+            cat /dev/null | sbt clean coverage test coverageReport
+            ./cc-test-reporter format-coverage -t cobertura -d application/server/target/scala-2.12/coverage-report/cobertura.xml
+            ./cc-test-reporter upload-coverage
       - store_artifacts:
           path:  application/server/target/scala-2.12/scoverage-report/
 
